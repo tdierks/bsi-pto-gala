@@ -25,6 +25,7 @@ angular.module('bsigala', [
       appreciationClasses: [],
       appreciations: {},
       appreciationPrice: 30,
+      biddingPaddles: [],
     };
   }
   $scope.resetOrder();
@@ -116,6 +117,21 @@ angular.module('bsigala', [
     });
     return oa;
   };
+  
+  $scope.getBiddingPaddles = function getBiddingPaddles() {
+    if ($scope.order.biddingPaddles.length == 0) {
+      $scope.order.biddingPaddles.push( { name: $scope.order.family } );
+    }
+    return $scope.order.biddingPaddles;
+  }
+
+  $scope.addBiddingPaddle = function addBiddingPaddle() {
+    $scope.order.biddingPaddles.push( { name: "" } );
+  }
+  
+  $scope.removeBiddingPaddle = function removeBiddingPaddle(index) {
+    $scope.order.biddingPaddles.splice(index, 1);
+  }
   
   $scope.unusedRooms = function unusedRooms(used) {
     var unused = [];

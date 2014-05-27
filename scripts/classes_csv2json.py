@@ -13,7 +13,7 @@ def csv_to_json(infile, outfile):
   for r in csv.DictReader(infile):
     if not r[CLASS_H]: continue
     classroom = r[CLASS_H]
-    classes.setdefault(classroom, []).append("Family of " + r[FAMILY_H]);
+    classes.setdefault(classroom, []).append(r[FAMILY_H]);
   outputRows = []
   for (room, parents) in classes.items():
     outputRows.append({'room': room, 'parents': parents})

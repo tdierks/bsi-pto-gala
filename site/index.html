@@ -20,23 +20,39 @@
 <div class="section" ng-show="selected.classroom && selected.classroom != NONE">
   <h2>Second, pick your family:</h2>
   <span ng-repeat="p in selected.classroom.parents" ng-hide="order.family && order.family != p">
-    <a class="choose" ng-click="chooseFamily(p)">{{p}}</a>
+    <a class="choose" ng-click="chooseFamily(p)">Family of {{p}}</a>
   </span>
   <a class="dismiss" ng-click="chooseFamily(null)" ng-show="order.family">&times;</a>
 </div>
 <div class="section" ng-show="selected.classroom == NONE">
   <h2>Second, enter your name:</h2>
-  <input type="text" ng-model="order.family">
+  <input type="text" ng-model="order.family" name="enteredName" size=50 required>
+  <span class="error" ng-show="orderForm.enteredName.$error.required">Please enter your name</span>
 </div>
 <div class="section" ng-show="order.family">
   <h2>Third, your order:</h2>
-  <h3>Gala Tickets</h3>
   <div>
+    <h3>Gala Tickets</h3>
     <select ng-model="order.tickets" ng-options="n for n in [0, 1, 2, 3, 4, 5, 6]"></select>
     Gala tickets (${{order.ticketPrice}} each)
   </div>
+  <div ng-show="order.tickets > 0">
+    <h3>Bidding Paddles</h3>
+    <div>Each auction bidder needs to be registered for a paddle.
+    Please enter the first and last name of the bidders for each paddle you want (up to {{order.tickets}}).
+    </div>
+    <div ng-repeat="p in getBiddingPaddles()" ng-form="paddle">
+      Paddle {{$index+1}} bidder: <input type="text" name="name" ng-model="p.name" required size=50>
+      <a class="dismiss" ng-click="removeBiddingPaddle($index)" ng-show="$index > 0">&times;</a>
+      <span class="error" ng-show="paddle.name.$error.required">Please enter the bidder's name</span>
+    </div>
+    <div ng-show="getBiddingPaddles().length < order.tickets">
+      <button ng-click="addBiddingPaddle()">Add a paddle</button>
+    </div>
+  </div>
   <!-- for buyers with classrooms -->
   <div ng-show="familyClassrooms(order.family).length">
+<!-- 
     <h3>Class pages</h3>
     <div>By supporting class pages (${{order.classPagePrice}} each), you will contribute to your
     child's class having a page in the gala program.
@@ -47,6 +63,7 @@
         <label><input type=checkbox ng-model="order.classPages[c]"></input>Class {{c}}</label>
       </div>
     </div>
+ -->
     <h3>Appreciations</h3>
     <div>Appreciations (${{order.appreciationPrice}} each) are a chance for you to include
     a message in the gala program.
@@ -80,12 +97,14 @@
   <div ng-show="order.tickets">
     {{order.tickets}} Gala tickets: ${{totalPrices().tickets}}
   </div>
+<!-- 
   <div ng-show="orderedClassPages().length">
     Support room pages for classes
     <span ng-repeat="classroom in orderedClassPages()"><span ng-show="$index &gt; 0">,</span>
       {{classroom}}</span>:
     ${{totalPrices().classPages}}
   </div>
+ -->
   <div ng-show="orderedAppreciations().length">
     Appreciations for classes: ${{totalPrices().appreciations}}
     <div ng-repeat="classroom in orderedAppreciations()">
