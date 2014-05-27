@@ -183,11 +183,12 @@ angular.module('bsigala', [
           paypalCart['on0_'+itemNumber] = { value: "For" };
           paypalCart['os0_'+itemNumber] = { value: order.family };
         }
-        angular.forEach(order.classPages, function(support, classroom) {
-          if (support) {
+        angular.forEach(order.classPages, function(input, classroom) {
+          var amount = parseInt(input, 10);
+          if (amount) {
             itemNumber++;
             paypalCart['item_name_'+itemNumber] = { value: "Support for class " + classroom + " page" };
-            paypalCart['amount_'+itemNumber] = { value: order.classPagePrice };
+            paypalCart['amount_'+itemNumber] = { value: amount };
           }
         });
         angular.forEach(order.appreciations, function(appreciation, classroom) {
