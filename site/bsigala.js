@@ -21,7 +21,6 @@ angular.module('bsigala', [
       tickets: 0,
       ticketPrice: 65,
       classPages: {},
-      classPagePrice: 30,
       appreciationClasses: [],
       appreciations: {},
       appreciationPrice: 30,
@@ -69,7 +68,7 @@ angular.module('bsigala', [
     $scope.order.family = family;
     $scope.order.appreciationClasses = familyClasses;
     angular.forEach(familyClasses, function(c) {
-      $scope.order.classPages[c] = false;
+      $scope.order.classPages[c] = 0;
     });
   };
   
@@ -100,8 +99,8 @@ angular.module('bsigala', [
   
   $scope.orderedClassPages = function orderedClassPages() {
     var ocp = [];
-    angular.forEach($scope.order.classPages, function ocpLoop(purchased, cr) {
-      if (purchased) {
+    angular.forEach($scope.order.classPages, function ocpLoop(amount, cr) {
+      if (amount) {
         ocp.push(cr);
       }
     });
@@ -149,7 +148,13 @@ angular.module('bsigala', [
   
   $scope.totalPrices = function totalPrices() {
     var tickets = $scope.order.tickets * $scope.order.ticketPrice;
-    var classPages = $scope.orderedClassPages().length * $scope.order.classPagePrice;
+    var classPages = 0;
+    angular.forEach($scope.order.classPages, function ocPriceLoop(input, cr) {
+      var amount = parseInt(input, 10);
+      if (amount && amount != NaN) {
+        classPages += amount;
+      }
+    });
     var appreciations = $scope.orderedAppreciations().length * $scope.order.appreciationPrice;
     return {
       tickets: tickets,

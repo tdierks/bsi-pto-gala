@@ -52,18 +52,17 @@
   </div>
   <!-- for buyers with classrooms -->
   <div ng-show="familyClassrooms(order.family).length">
-<!-- 
     <h3>Class pages</h3>
-    <div>By supporting class pages (${{order.classPagePrice}} each), you will contribute to your
-    child's class having a page in the gala program.
+    <div>By supporting class pages, you will contribute to your
+    child's class having a page in the gala program. Any contribution is welcome;
+    each class is trying to collect $500 for their class's ad.
     </div>
     <div>
       Support the class pages for:
-      <div ng-repeat="c in familyClassrooms(selected.family)">
-        <label><input type=checkbox ng-model="order.classPages[c]"></input>Class {{c}}</label>
+      <div ng-repeat="c in familyClassrooms(order.family)">
+        <label>Class {{c}}: $<input size=5 type="text" ng-model="order.classPages[c]"></input></label>
       </div>
     </div>
- -->
     <h3>Appreciations</h3>
     <div>Appreciations (${{order.appreciationPrice}} each) are a chance for you to include
     a message in the gala program.
@@ -95,24 +94,22 @@
     <i>Nothing yet</i>
   </div>
   <div ng-show="order.tickets">
-    {{order.tickets}} Gala tickets: ${{totalPrices().tickets}}
+    {{order.tickets}} Gala tickets: {{totalPrices().tickets | currency:$}}
   </div>
-<!-- 
   <div ng-show="orderedClassPages().length">
-    Support room pages for classes
-    <span ng-repeat="classroom in orderedClassPages()"><span ng-show="$index &gt; 0">,</span>
-      {{classroom}}</span>:
-    ${{totalPrices().classPages}}
+    Support room pages: {{totalPrices().classPages | currency:$}}
+    <div ng-repeat="classroom in orderedClassPages()">
+      Class {{classroom}}: {{order.classPages[classroom] | currency: $}}
+    </div>
   </div>
- -->
   <div ng-show="orderedAppreciations().length">
-    Appreciations for classes: ${{totalPrices().appreciations}}
+    Appreciations: {{totalPrices().appreciations | currency:$}}
     <div ng-repeat="classroom in orderedAppreciations()">
-      {{classroom}}: "{{appreciationForClass(classroom).message}}"
+      Class {{classroom}}: "{{appreciationForClass(classroom).message}}"
     </div>
   </div>
   <div ng-show="totalPrices().total">
-    Total: ${{totalPrices().total}}
+    Total: {{totalPrices().total | currency:$}}
     <div ng-show="orderForm.$valid">
       <buy-button order="order"></buy-button>
     </div>
