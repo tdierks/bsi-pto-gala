@@ -1,0 +1,107 @@
+<html lang="en" ng-app="bsigala" id="ng-app">
+<head>
+<title>BSI Gala Tickets</title>
+<link href="/style.css" rel="stylesheet">
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+<script src="/paypal-button.js?merchant=tim@dierks.org"></script>
+<script src="bsigala.js"></script>
+</head>
+<body ng-controller="BsiGalaCtrl">
+<form name="orderForm">
+<h1>GALA TICKETS &amp; CLASS APPRECIATIONS 2014</h1>
+<div class="section">
+  <h2>First, choose the classroom of your oldest child:</h2>
+  <span ng-repeat="c in allrooms" ng-hide="selected.classroom && selected.classroom.room != c">
+    <a class="choose" ng-click="chooseClassroom(c)">{{c}}</a>
+  </span>
+  <span ng-hide="selected.classroom && selected.classroom != NONE"><a class="choose" ng-click="noClassroom()">I don't have a child at BSI</a></span>
+  <a class="dismiss" ng-click="chooseClassroom(null)" ng-show="selected.classroom">&times;</a>
+</div>
+<div class="section" ng-show="selected.classroom && selected.classroom != NONE">
+  <h2>Second, pick your family:</h2>
+  <span ng-repeat="p in selected.classroom.parents" ng-hide="order.family && order.family != p">
+    <a class="choose" ng-click="chooseFamily(p)">{{p}}</a>
+  </span>
+  <a class="dismiss" ng-click="chooseFamily(null)" ng-show="order.family">&times;</a>
+</div>
+<div class="section" ng-show="selected.classroom == NONE">
+  <h2>Second, enter your name:</h2>
+  <input type="text" ng-model="order.family">
+</div>
+<div class="section" ng-show="order.family">
+  <h2>Third, your order:</h2>
+  <h3>Gala Tickets</h3>
+  <div>
+    <select ng-model="order.tickets" ng-options="n for n in [0, 1, 2, 3, 4, 5, 6]"></select>
+    Gala tickets (${{order.ticketPrice}} each)
+  </div>
+  <!-- for buyers with classrooms -->
+  <div ng-show="familyClassrooms(order.family).length">
+    <h3>Class pages</h3>
+    <div>By supporting class pages (${{order.classPagePrice}} each), you will contribute to your
+    child's class having a page in the gala program.
+    </div>
+    <div>
+      Support the class pages for:
+      <div ng-repeat="c in familyClassrooms(selected.family)">
+        <label><input type=checkbox ng-model="order.classPages[c]"></input>Class {{c}}</label>
+      </div>
+    </div>
+    <h3>Appreciations</h3>
+    <div>Appreciations (${{order.appreciationPrice}} each) are a chance for you to include
+    a message in the gala program.
+    </div>
+    <div>
+      Offer an appreciation for the following classes:
+      <div ng-repeat="c in order.appreciationClasses" ng-form="appForm">
+        <input type=checkbox ng-model="appreciationForClass(c).purchase"></input>Class {{c}}:
+        <input type=text name="msg" ng-model="appreciationForClass(c).message" ng-change="appreciationForClass(c).purchase = true" size=90 ng-required="appreciationForClass(c).purchase" ng-maxlength="90"></input><br>
+        <span ng-show="appreciationForClass(c).purchase">
+          <span ng-show="appreciationForClass(c).message && appForm.msg.$valid">
+            {{90 - appreciationForClass(c).message.length}} characters remaining
+          </span>
+          <span class="error" ng-show="appForm.msg.$error.required">Please enter an appreciation</span>
+          <span class="error" ng-show="appForm.msg.$error.maxlength">90 characters max</span>
+        </span>
+      </div>
+      <div>
+        Add a room:
+        <select ng-model="selected.appreciationRoomToAdd" ng-options="c for c in unusedRooms(order.appreciationClasses)"></select>
+        <button ng-click="addAppreciationRoom()" ng-disabled="!selected.appreciationRoomToAdd">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="section">
+  <h2>Your order</h2>
+  <div ng-hide="totalPrices().total">
+    <i>Nothing yet</i>
+  </div>
+  <div ng-show="order.tickets">
+    {{order.tickets}} Gala tickets: ${{totalPrices().tickets}}
+  </div>
+  <div ng-show="orderedClassPages().length">
+    Support room pages for classes
+    <span ng-repeat="classroom in orderedClassPages()"><span ng-show="$index &gt; 0">,</span>
+      {{classroom}}</span>:
+    ${{totalPrices().classPages}}
+  </div>
+  <div ng-show="orderedAppreciations().length">
+    Appreciations for classes: ${{totalPrices().appreciations}}
+    <div ng-repeat="classroom in orderedAppreciations()">
+      {{classroom}}: "{{appreciationForClass(classroom).message}}"
+    </div>
+  </div>
+  <div ng-show="totalPrices().total">
+    Total: ${{totalPrices().total}}
+    <div ng-show="orderForm.$valid">
+      <buy-button order="order"></buy-button>
+    </div>
+    <div class="error" ng-hide="orderForm.$valid">
+      Fix problems above before purchasing.
+    </div>
+  </div>
+</div>
+</form>
+</body>
+</html>

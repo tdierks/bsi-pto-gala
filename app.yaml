@@ -1,0 +1,23 @@
+application: bsi-pto
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /paypal-ipn
+  script: bsigala.app
+  secure: always
+
+- url: /$
+  static_files: site/index.html
+  upload: site/index.html
+  secure: always
+
+- url: /
+  static_dir: site
+  secure: always
+
+libraries:
+- name: webapp2
+  version: "2.5.1"
