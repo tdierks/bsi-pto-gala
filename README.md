@@ -24,3 +24,10 @@ Some notes for my future recollection:
     (wait until you tab out?)
   * On Chrome, I'm getting both HTML validation popups and my required messages,
     which is overkill.
+  * I've omitted the sources used to generate classrooms.json from this repository,
+    but it's an Excel file (converted to CSV) that has a row for each student
+    with two relevant columns: the classroom (3 digits, e.g. 002, 301) and
+    the parents names ("John and Judy Smith" or "Sarah Jones and Janet Williams").
+    The python script scripts/classes_csv2json.py converts the csv into the
+    JSON the app uses.
+  
