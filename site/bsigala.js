@@ -25,6 +25,17 @@ angular.module('bsigala', [
       appreciations: {},
       appreciationPrice: 30,
       biddingPaddles: [],
+      taFundGift: 0,
+      ads: {
+        full: 0,
+        half: 0,
+        quarter: 0,
+        eighth: 0,
+        fullPrice: 500,
+        halfPrice: 250,
+        quarterPrice: 125,
+        eighthPrice: 75.
+      },
     };
   }
   $scope.resetOrder();
@@ -37,6 +48,15 @@ angular.module('bsigala', [
       });
       $scope.allrooms.sort();
     });
+  
+  $scope.formatRoom = function formatRoom(classroom) {
+    var c = classroom.charAt(0);
+    if (c == "0") {
+      return "K-"+classroom;
+    } else {
+      return c+"-"+classroom;
+    }
+  }
   
   $scope.classParentsFilter = function classParentsFilter(family) {
     return function classHasParents(c) {
@@ -148,6 +168,8 @@ angular.module('bsigala', [
   
   $scope.totalPrices = function totalPrices() {
     var tickets = $scope.order.tickets * $scope.order.ticketPrice;
+    var taFundGift = parseInt($scope.order.taFundGift, 10);
+    if (!taFundGift || taFundGift == NaN) taFundGift = 0;
     var classPages = 0;
     angular.forEach($scope.order.classPages, function ocPriceLoop(input, cr) {
       var amount = parseInt(input, 10);
@@ -156,11 +178,20 @@ angular.module('bsigala', [
       }
     });
     var appreciations = $scope.orderedAppreciations().length * $scope.order.appreciationPrice;
+    var adsPrices = {
+      full: $scope.order.ads.full * $scope.order.ads.fullPrice,
+      half: $scope.order.ads.half * $scope.order.ads.halfPrice,
+      quarter: $scope.order.ads.quarter * $scope.order.ads.quarterPrice,
+      eighth: $scope.order.ads.eighth * $scope.order.ads.eighthPrice,
+    };
+    adsPrices.total = adsPrices.full + adsPrices.half + adsPrices.quarter + adsPrices.eighth;
     return {
       tickets: tickets,
+      taFundGift: taFundGift,
       classPages: classPages,
       appreciations: appreciations,
-      total: tickets + classPages + appreciations,
+      ads: adsPrices,
+      total: tickets + classPages + appreciations + adsPrices.total + taFundGift,
     };
   }
 }])
@@ -168,44 +199,100 @@ angular.module('bsigala', [
   function link(scope, element, attrs) {
     scope.$watch("order",
       function updatePaypalButton(order) {
+        var itemNumber = 0;
         var paypalCart = {
-          env: { value: "sandbox" },
+//           env: { value: "sandbox" },
           no_shipping: { value: "1" },
           custom: { value: order.family },
         };
-        var itemNumber = 0;
         
-        if (order.tickets > 0) {
+        function addItem(item) {
           itemNumber++;
-          paypalCart['item_name_'+itemNumber] = { value: "Gala Ticket" };
-          paypalCart['quantity_'+itemNumber] = { value: order.tickets };
-          paypalCart['amount_'+itemNumber] = { value: order.ticketPrice };
-          paypalCart['on0_'+itemNumber] = { value: "For" };
-          paypalCart['os0_'+itemNumber] = { value: order.family };
+          paypalCart['item_name_'+itemNumber] = { value: item.name };
+          paypalCart['amount_'+itemNumber] = { value: item.amount };
+          if (item.quantity) paypalCart['quantity_'+itemNumber] = { value: item.quantity };
+          if (item.detailName) paypalCart['on0_'+itemNumber] = { value: item.detailName };
+          if (item.detailInfo) paypalCart['os0_'+itemNumber] = { value: item.detailInfo };
+        }
+
+        if (order.tickets > 0) {
+          addItem({
+            name: "Gala Ticket",
+            quantity: order.tickets,
+            amount: order.ticketPrice,
+            detailName: "For",
+            detailInfo: order.family,
+          });
+          
+          angular.forEach(order.biddingPaddles, function obp(bidder) {
+            addItem({
+              name: "Bidding Paddle",
+              quantity: "1",
+              amount: "0.00",
+              detailName: "For",
+              detailInfo: bidder.name,
+            });
+          });
+        }
+        if (order.taFundGift) {
+          addItem({
+            name: "TA fund gift",
+            amount: order.taFundGift,
+          });
         }
         angular.forEach(order.classPages, function(input, classroom) {
           var amount = parseInt(input, 10);
           if (amount) {
-            itemNumber++;
-            paypalCart['item_name_'+itemNumber] = { value: "Support for class " + classroom + " page" };
-            paypalCart['amount_'+itemNumber] = { value: amount };
+            addItem({
+              name: "Support for class " + classroom + " page",
+              amount: amount,
+            });
           }
         });
         angular.forEach(order.appreciations, function(appreciation, classroom) {
           if (appreciation.purchase) {
-            itemNumber++;
-            paypalCart['item_name_'+itemNumber] = { value: "Appreciation for class " + classroom };
-            paypalCart['amount_'+itemNumber] = { value: order.appreciationPrice };
-            paypalCart['on0_'+itemNumber] = { value: "Message" };
-            paypalCart['os0_'+itemNumber] = { value: appreciation.message };
+            addItem({
+              name: "Appreciation for class " + classroom,
+              amount: order.appreciationPrice,
+              detailName: "Message",
+              detailInfo: appreciation.message,
+            });
           }
         });
+        if (order.ads.full) {
+          addItem({
+            name: "Full-page ad",
+            amount: order.ads.fullPrice,
+            quantity: order.ads.full,
+          });
+        }
+        if (order.ads.half) {
+          addItem({
+            name: "Half-page ad",
+            amount: order.ads.halfPrice,
+            quantity: order.ads.half,
+          });
+        }
+        if (order.ads.quarter) {
+          addItem({
+            name: "Quarter-page ad",
+            amount: order.ads.quarterPrice,
+            quantity: order.ads.quarter,
+          });
+        }
+        if (order.ads.eighth) {
+          addItem({
+            name: "Eighth-page ad",
+            amount: order.ads.eighthPrice,
+            quantity: order.ads.eighth,
+          });
+        }
         while (element[0].firstChild) {
           element[0].removeChild(element[0].firstChild);
         }
         if (itemNumber > 0) {
           PAYPAL.apps.ButtonFactory.create(
-            "tim-facilitator@dierks.org",
+            "L7AX8DDDDXCWC",
             paypalCart,
             "uploadcart",
             element[0]);
