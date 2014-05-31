@@ -38,8 +38,9 @@
   </div>
   <div ng-show="order.tickets > 0">
     <h3>Bidding Paddles</h3>
-    <div>Each auction bidder needs to be registered for a paddle.<br>
-    Please enter the first and last name of the bidders for each paddle you want (up to {{order.tickets}}).
+    <div>
+      Each auction bidder needs to be registered for a paddle.<br>
+      Please enter the first and last name of the bidders for each paddle you want (up to {{order.tickets}}).
     </div>
     <div ng-repeat="p in getBiddingPaddles()" ng-form="paddle">
       Paddle {{$index+1}} bidder: <input type="text" name="name" ng-model="p.name" required size=50>
@@ -52,10 +53,11 @@
   </div>
   <div>
     <h4>TA gala ticket fund</h4>
-    <div>By making a contribution, you can help pay for teacher's assistants to come to the gala;
-    make it possible for these people who contribute to our kids' classrooms and help our teachers
-    to celebrate with us.<br>
-    <input type="text" size=5 type="text" ng-model="order.taFundGift"></input>
+    <div>
+      By making a contribution, you can help pay for teacher's assistants to come to the gala;
+      make it possible for these people who contribute to our kids' classrooms and help our teachers
+      to celebrate with us.<br>
+      <input type="text" size=5 ng-model="order.taFundGift"></input>
     </div>
   </div>
   <!-- for buyers with classrooms -->
@@ -73,6 +75,8 @@
       </div>
     </div>
  -->
+  </div>
+  <div>
     <h3>Gala Program Purchases</h3>
     <h4>Appreciations</h4>
     <div><b>Due May 30th at 11:59 PM! They turn into a pumpkin and go to the printers then, don't get left out.</b></div>
@@ -82,8 +86,8 @@
     <div>
       Offer an appreciation for the following classes:
       <div ng-repeat="c in order.appreciationClasses" ng-form="appForm">
-        <input type=checkbox ng-model="appreciationForClass(c).purchase"></input>Class {{formatRoom(c)}}:
-        <input type=text name="msg" ng-model="appreciationForClass(c).message" ng-change="appreciationForClass(c).purchase = true" size=90 ng-required="appreciationForClass(c).purchase" ng-maxlength="90"></input><br>
+        <input type=checkbox ng-model="appreciationForClass(c).purchase">Class {{formatRoom(c)}}:
+        <input type=text name="msg" ng-model="appreciationForClass(c).message" ng-change="appreciationForClass(c).purchase = true" size=90 ng-required="appreciationForClass(c).purchase" ng-maxlength="90"><br>
         <span ng-show="appreciationForClass(c).purchase">
           <span ng-show="appreciationForClass(c).message && appForm.msg.$valid">
             {{90 - appreciationForClass(c).message.length}} characters remaining
@@ -100,10 +104,10 @@
     </div>
     <h4>Gala Program Ads</h4>
     <div>Share your message with the BSI community. To submit artwork for your purchased ad, please write to <a href="mailto:bsigalaprogram2014@gmail.com">bsigalaprogram2014@gmail.com</a>.<b>Due May 30th at 11:59 PM!</b>
-    <div>Full Page: $500 <span class="detail">4.875" &times; 7.875"<span class="detail">: <select ng-model="order.ads.full" ng-options="n for n in [0, 1, 2, 3, 4]"></select></div>
-    <div>Half Page: $250 <span class="detail">4.875" &times; 3.875"<span class="detail">: <select ng-model="order.ads.half" ng-options="n for n in [0, 1, 2, 3, 4]"></select></div>
-    <div>Quarter Page: $125 <span class="detail">2.375" &times; 3.875"<span class="detail">: <select ng-model="order.ads.quarter" ng-options="n for n in [0, 1, 2, 3, 4]"></select></div>
-    <div>Eighth Page: $75 <span class="detail">4.875" &times; 1.875"<span class="detail">: <select ng-model="order.ads.eighth" ng-options="n for n in [0, 1, 2, 3, 4]"></select></div>
+      <div>Full Page: $500 <span class="detail">4.875" &times; 7.875"<span class="detail">: <select ng-model="order.ads.full" ng-options="n for n in [0, 1, 2, 3, 4]"></select></div>
+      <div>Half Page: $250 <span class="detail">4.875" &times; 3.875"<span class="detail">: <select ng-model="order.ads.half" ng-options="n for n in [0, 1, 2, 3, 4]"></select></div>
+      <div>Quarter Page: $125 <span class="detail">2.375" &times; 3.875"<span class="detail">: <select ng-model="order.ads.quarter" ng-options="n for n in [0, 1, 2, 3, 4]"></select></div>
+      <div>Eighth Page: $75 <span class="detail">4.875" &times; 1.875"<span class="detail">: <select ng-model="order.ads.eighth" ng-options="n for n in [0, 1, 2, 3, 4]"></select></div>
     </div>
   </div>
 </div>
