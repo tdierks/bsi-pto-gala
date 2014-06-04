@@ -3,12 +3,13 @@
 <title>BSI Gala Tickets</title>
 <link href="/style.css" rel="stylesheet">
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
-<script src="/paypal-button.js?merchant=tim@dierks.org"></script>
+<script src="/paypal-button.js"></script>
 <script src="bsigala.js"></script>
 </head>
 <body ng-controller="BsiGalaCtrl">
 <form name="orderForm">
 <h1>GALA TICKETS &amp; GALA PROGRAM SALES 2014</h1>
+<h2 ng-show="testEnv" style="color:red">TEST ENVIRONMENT</h1>
 <div class="section">
   <h2>First, choose your child's classroom:</h2>
   <span ng-repeat="c in allrooms" ng-hide="selected.classroom && selected.classroom.room != c">

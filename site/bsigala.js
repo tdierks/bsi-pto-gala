@@ -3,12 +3,21 @@
 angular.module('bsigala', [
 ])
 .controller('BsiGalaCtrl', ['$scope', '$http', function BsiGalaCtrl($scope, $http) {
-
+  $scope.testEnv = false;
+  $scope.merchant = "L7AX8DDDDXCWC";
+  
+  if ($scope.testEnv) {
+    $scope.merchant = "tim@dierks.org";
+  }
+  
   $scope.classrooms = [];
   $scope.allrooms = [];
   
   $scope.giftingRooms = {
     "001": true,
+    "002": true,
+    "501": true,
+    "502": true,
   };
   
   $scope.selected = {
@@ -21,6 +30,8 @@ angular.module('bsigala', [
   
   $scope.resetOrder = function resetOrder() {
     $scope.order = {
+      testEnv: $scope.testEnv,
+      merchant: $scope.merchant,
       family: null,
       tickets: 0,
       ticketPrice: 65,
@@ -220,10 +231,13 @@ angular.module('bsigala', [
       function updatePaypalButton(order) {
         var itemNumber = 0;
         var paypalCart = {
-//           env: { value: "sandbox" },
           no_shipping: { value: "1" },
           custom: { value: order.family },
         };
+        
+        if (order.testEnv) {
+          paypalCart.env = { value: "sandbox" };
+        }
         
         function addItem(item) {
           itemNumber++;
@@ -311,7 +325,7 @@ angular.module('bsigala', [
         }
         if (itemNumber > 0) {
           PAYPAL.apps.ButtonFactory.create(
-            "L7AX8DDDDXCWC",
+            order.merchant,
             paypalCart,
             "uploadcart",
             element[0]);
