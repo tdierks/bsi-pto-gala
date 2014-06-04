@@ -7,6 +7,10 @@ angular.module('bsigala', [
   $scope.classrooms = [];
   $scope.allrooms = [];
   
+  $scope.giftingRooms = {
+    "001": true,
+  };
+  
   $scope.selected = {
     "classroom": null,
     "family": null,
@@ -101,6 +105,21 @@ angular.module('bsigala', [
     });
     return familyClasses;
   };
+  
+  $scope.isGiftingClassroom = function isGiftingClassroom(room) {
+    return (room in $scope.giftingRooms);
+  }
+  
+  $scope.familyGiftingClassrooms = function familyGiftingClassrooms(family) {
+    var familyRooms = $scope.familyClassrooms(family);
+    var giftRooms = [];
+    for (var i = 0; i < familyRooms.length; ++i) {
+      if ($scope.isGiftingClassroom(familyRooms[i])) {
+        giftRooms.push(familyRooms[i]);
+      }
+    }
+    return giftRooms;
+  }
   
   $scope.appreciationForClass = function appreciationForClass(classroom) {
     if (!$scope.order.appreciations.hasOwnProperty(classroom)) {

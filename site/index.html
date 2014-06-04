@@ -61,8 +61,7 @@
     </div>
   </div>
   <!-- for buyers with classrooms -->
-  <div ng-show="familyClassrooms(order.family).length">
-<!-- 
+  <div ng-show="familyGiftingClassrooms(order.family).length">
     <h3>Class pages</h3>
     <div>By supporting class pages, you will contribute to your
     child's class having a page in the gala program. Any contribution is welcome;
@@ -70,11 +69,10 @@
     </div>
     <div>
       Support the class pages for:
-      <div ng-repeat="c in familyClassrooms(order.family)">
+      <div ng-repeat="c in familyGiftingClassrooms(order.family)">
         <label>Class {{formatRoom(c)}}: $<input size=5 type="text" ng-model="order.classPages[c]"></input></label>
       </div>
     </div>
- -->
   </div>
   <div>
     <h3>Gala Program Purchases</h3>
@@ -125,18 +123,16 @@
   <div ng-show="totalPrices().taFundGift">
     TA fund contribution: {{ order.taFundGift | currency:$ }}
   </div>
-<!-- 
   <div ng-show="orderedClassPages().length">
     Support room pages: {{totalPrices().classPages | currency:$}}
     <div ng-repeat="classroom in orderedClassPages()">
-      Class {{classroom}}: {{order.classPages[classroom] | currency: $}}
+      Class {{formatRoom(classroom)}}: {{order.classPages[classroom] | currency: $}}
     </div>
   </div>
- -->
   <div ng-show="orderedAppreciations().length">
     Appreciations: {{totalPrices().appreciations | currency:$}}
     <div ng-repeat="classroom in orderedAppreciations()">
-      Class {{classroom}}: "{{appreciationForClass(classroom).message}}"
+      Class {{formatRoom(classroom)}}: "{{appreciationForClass(classroom).message}}"
     </div>
   </div>
   <div ng-show="totalPrices().ads.total">
