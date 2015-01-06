@@ -3,7 +3,7 @@
 angular.module('bsigala', [
 ])
 .controller('BsiGalaCtrl', ['$scope', '$http', function BsiGalaCtrl($scope, $http) {
-  $scope.testEnv = false;
+  $scope.testEnv = true;
   $scope.merchant = "L7AX8DDDDXCWC";
   
   if ($scope.testEnv) {
@@ -12,13 +12,6 @@ angular.module('bsigala', [
   
   $scope.classrooms = [];
   $scope.allrooms = [];
-  
-  $scope.giftingRooms = {
-    "001": true,
-    "002": true,
-    "501": true,
-    "502": true,
-  };
   
   $scope.selected = {
     "classroom": null,
@@ -33,24 +26,6 @@ angular.module('bsigala', [
       testEnv: $scope.testEnv,
       merchant: $scope.merchant,
       family: null,
-      tickets: 0,
-      ticketPrice: 80,
-      classPages: {},
-      appreciationClasses: [],
-      appreciations: {},
-      appreciationPrice: 30,
-      biddingPaddles: [],
-      taFundGift: 0,
-      ads: {
-        full: 0,
-        half: 0,
-        quarter: 0,
-        eighth: 0,
-        fullPrice: 500,
-        halfPrice: 250,
-        quarterPrice: 125,
-        eighthPrice: 75.
-      },
     };
   }
   $scope.resetOrder();
@@ -117,111 +92,9 @@ angular.module('bsigala', [
     return familyClasses;
   };
   
-  $scope.isGiftingClassroom = function isGiftingClassroom(room) {
-    return (room in $scope.giftingRooms);
-  }
-  
-  $scope.familyGiftingClassrooms = function familyGiftingClassrooms(family) {
-    var familyRooms = $scope.familyClassrooms(family);
-    var giftRooms = [];
-    for (var i = 0; i < familyRooms.length; ++i) {
-      if ($scope.isGiftingClassroom(familyRooms[i])) {
-        giftRooms.push(familyRooms[i]);
-      }
-    }
-    return giftRooms;
-  }
-  
-  $scope.appreciationForClass = function appreciationForClass(classroom) {
-    if (!$scope.order.appreciations.hasOwnProperty(classroom)) {
-      $scope.order.appreciations[classroom] = {
-        'purchase': false,
-        'message': "",
-      };
-    }
-    return $scope.order.appreciations[classroom];
-  };
-  
-  $scope.addAppreciationRoom = function addAppreciationRoom() {
-    $scope.order.appreciationClasses.push($scope.selected.appreciationRoomToAdd);
-    $scope.selected.appreciationRoomToAdd = null;
-  };
-  
-  $scope.orderedClassPages = function orderedClassPages() {
-    var ocp = [];
-    angular.forEach($scope.order.classPages, function ocpLoop(amount, cr) {
-      if (amount) {
-        ocp.push(cr);
-      }
-    });
-    return ocp;
-  };
-  
-  $scope.orderedAppreciations = function orderedAppreciations() {
-    var oa = [];
-    angular.forEach($scope.order.appreciationClasses, function oaLoop(cr) {
-      if ($scope.order.appreciations[cr] && $scope.order.appreciations[cr].purchase) {
-        oa.push(cr);
-      }
-    });
-    return oa;
-  };
-  
-  $scope.getBiddingPaddles = function getBiddingPaddles() {
-    if ($scope.order.biddingPaddles.length == 0) {
-      $scope.order.biddingPaddles.push( { name: $scope.order.family } );
-    }
-    return $scope.order.biddingPaddles;
-  }
-
-  $scope.addBiddingPaddle = function addBiddingPaddle() {
-    $scope.order.biddingPaddles.push( { name: "" } );
-  }
-  
-  $scope.removeBiddingPaddle = function removeBiddingPaddle(index) {
-    $scope.order.biddingPaddles.splice(index, 1);
-  }
-  
-  $scope.unusedRooms = function unusedRooms(used) {
-    var unused = [];
-    var ud = {};
-    angular.forEach(used, function(r) {
-      ud[r] = true;
-    });
-    angular.forEach($scope.allrooms, function(r) {
-      if (!(r in ud)) {
-        unused.push(r);
-      }
-    });
-    return unused;
-  }
-  
   $scope.totalPrices = function totalPrices() {
-    var tickets = $scope.order.tickets * $scope.order.ticketPrice;
-    var taFundGift = parseInt($scope.order.taFundGift, 10);
-    if (!taFundGift || taFundGift == NaN) taFundGift = 0;
-    var classPages = 0;
-    angular.forEach($scope.order.classPages, function ocPriceLoop(input, cr) {
-      var amount = parseInt(input, 10);
-      if (amount && amount != NaN) {
-        classPages += amount;
-      }
-    });
-    var appreciations = $scope.orderedAppreciations().length * $scope.order.appreciationPrice;
-    var adsPrices = {
-      full: $scope.order.ads.full * $scope.order.ads.fullPrice,
-      half: $scope.order.ads.half * $scope.order.ads.halfPrice,
-      quarter: $scope.order.ads.quarter * $scope.order.ads.quarterPrice,
-      eighth: $scope.order.ads.eighth * $scope.order.ads.eighthPrice,
-    };
-    adsPrices.total = adsPrices.full + adsPrices.half + adsPrices.quarter + adsPrices.eighth;
     return {
-      tickets: tickets,
-      taFundGift: taFundGift,
-      classPages: classPages,
-      appreciations: appreciations,
-      ads: adsPrices,
-      total: tickets + classPages + appreciations + adsPrices.total + taFundGift,
+      total: 0,
     };
   }
 }])
@@ -248,78 +121,6 @@ angular.module('bsigala', [
           if (item.detailInfo) paypalCart['os0_'+itemNumber] = { value: item.detailInfo };
         }
 
-        if (order.tickets > 0) {
-          addItem({
-            name: "Gala Ticket",
-            quantity: order.tickets,
-            amount: order.ticketPrice,
-            detailName: "For",
-            detailInfo: order.family,
-          });
-          
-          angular.forEach(order.biddingPaddles, function obp(bidder) {
-            addItem({
-              name: "Bidding Paddle",
-              quantity: "1",
-              amount: "0.00",
-              detailName: "For",
-              detailInfo: bidder.name,
-            });
-          });
-        }
-        if (order.taFundGift) {
-          addItem({
-            name: "TA fund gift",
-            amount: order.taFundGift,
-          });
-        }
-        angular.forEach(order.classPages, function(input, classroom) {
-          var amount = parseInt(input, 10);
-          if (amount) {
-            addItem({
-              name: "Support for class " + classroom + " page",
-              amount: amount,
-            });
-          }
-        });
-        angular.forEach(order.appreciations, function(appreciation, classroom) {
-          if (appreciation.purchase) {
-            addItem({
-              name: "Appreciation for class " + classroom,
-              amount: order.appreciationPrice,
-              detailName: "Message",
-              detailInfo: appreciation.message,
-            });
-          }
-        });
-        if (order.ads.full) {
-          addItem({
-            name: "Full-page ad",
-            amount: order.ads.fullPrice,
-            quantity: order.ads.full,
-          });
-        }
-        if (order.ads.half) {
-          addItem({
-            name: "Half-page ad",
-            amount: order.ads.halfPrice,
-            quantity: order.ads.half,
-          });
-        }
-        if (order.ads.quarter) {
-          addItem({
-            name: "Quarter-page ad",
-            amount: order.ads.quarterPrice,
-            quantity: order.ads.quarter,
-          });
-        }
-        if (order.ads.eighth) {
-          addItem({
-            name: "Eighth-page ad",
-            amount: order.ads.eighthPrice,
-            quantity: order.ads.eighth,
-          });
-        }
         while (element[0].firstChild) {
           element[0].removeChild(element[0].firstChild);
         }
