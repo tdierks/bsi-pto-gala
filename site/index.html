@@ -40,6 +40,9 @@
   <select ng-model="order.tickets" ng-options="n for n in [0, 1, 2, 3, 4, 5, 6, 7, 8]"></select>
     skaters
   </div>
+  <div>Please print and sign <a href="/BSI_Waiver_Feb_8_2015.pdf" target="_blank">this waiver form</a> and bring it with you when skating.
+  This will get you on the ice as quickly as possible.
+  </div>
 </div>
 <div class="section">
   <h2>Your order</h2>
@@ -49,7 +52,8 @@
   <div ng-show="totalPrices().total">
     Total: {{totalPrices().total | currency:$}}
     <div ng-show="orderForm.$valid">
-      <buy-button order="order"></buy-button>
+      <div><buy-button order="order"></buy-button></div>
+      Don't forget to print, sign, and bring your <a href="/BSI_Waiver_Feb_8_2015.pdf" target="_blank">waiver form</a>. See you at the rink!
     </div>
     <div class="error" ng-hide="orderForm.$valid">
       Fix problems above before purchasing.

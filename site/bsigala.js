@@ -136,11 +136,15 @@ angular.module('bsigala', [
         }
 
         if (order.tickets > 0) {
+          var classText = ""
+          if (order.classroom != null) {
+            classText = ", class " + order.classroom.room;
+          }
           addItem({
             name: "Ice Skating for " + order.tickets + " skaters",
             amount: order.ticketPrice(),
             detailName: "For",
-            detailInfo: order.family + ", class " + order.classroom.room,
+            detailInfo: order.family + classText,
           });
         }
 
