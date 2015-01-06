@@ -5,14 +5,18 @@ import argparse
 import csv
 import json
 
-CLASS_H = 'CLASSROOM IN 2013-14'
-FAMILY_H = 'PARENTS NAMES'
+CLASS_H = 'Class'
+FAMILY_H = 'Household: Household Name'
 
 def csv_to_json(infile, outfile):
   classes = {}
   for r in csv.DictReader(infile):
     if not r[CLASS_H]: continue
     classroom = r[CLASS_H]
+    if (classroom[0] == classroom[2] or classroom[0:3] == 'K-0') and classroom[1] == '-':
+      classroom = classroom[2:]
+    else:
+      raise Exception("Classroom {} should be in format 'X-Xxx'".format(classroom))
     classes.setdefault(classroom, []).append(r[FAMILY_H]);
   outputRows = []
   for (room, parents) in classes.items():

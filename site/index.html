@@ -20,8 +20,8 @@
 </div>
 <div class="section" ng-show="selected.classroom && selected.classroom != NONE">
   <h2>Second, pick your family:</h2>
-  <span ng-repeat="p in selected.classroom.parents" ng-hide="order.family && order.family != p">
-    <a class="choose" ng-click="chooseFamily(p)">Family of {{p}}</a>
+  <span ng-repeat="p in selected.classroom.parents | orderBy:'toString()'" ng-hide="order.family && order.family != p">
+    <a class="choose" ng-click="chooseFamily(p)">{{p}}</a>
   </span>
   <a class="dismiss" ng-click="chooseFamily(null)" ng-show="order.family">&times;</a>
 </div>
