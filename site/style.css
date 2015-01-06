@@ -34,6 +34,11 @@ h4 {
   margin-bottom: 0.7em;
 }
 
+.info {
+  text-align: center;
+  margin-top: 0.7em;
+}
+
 .section {
   background-color: #67C2E6;
   border-radius: 8px;

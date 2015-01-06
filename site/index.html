@@ -32,10 +32,12 @@
 </div>
 <div class="section" ng-show="order.family">
   <h2>Third, your order:</h2>
+  <div>Ticket orders have closed, you can buy tickets at the door!</div>
+<!-- 
   <div>
     <h3>Gala Tickets</h3>
     <select ng-model="order.tickets" ng-options="n for n in [0, 1, 2, 3, 4, 5, 6, 7, 8]"></select>
-    Gala tickets (${{order.ticketPrice}} each&mdash;After June 8th, they will go up to $80)
+    Gala tickets (${{order.ticketPrice}} each)
   </div>
   <div ng-show="order.tickets > 0">
     <h3>Bidding Paddles</h3>
@@ -61,6 +63,7 @@
       <input type="text" size=5 ng-model="order.taFundGift"></input>
     </div>
   </div>
+ -->
   <!-- for buyers with classrooms -->
   <div ng-show="familyGiftingClassrooms(order.family).length">
     <h3>Class pages</h3>

@@ -13,8 +13,13 @@ handlers:
   static_files: site/index.html
   upload: site/index.html
   secure: always
+  mime_type: text/html; charset=UTF-8
 
 - url: /
+  static_dir: site
+  secure: always
+
+- url: /.*\.html$
   static_dir: site
   secure: always
 

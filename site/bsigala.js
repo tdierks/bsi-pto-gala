@@ -34,7 +34,7 @@ angular.module('bsigala', [
       merchant: $scope.merchant,
       family: null,
       tickets: 0,
-      ticketPrice: 65,
+      ticketPrice: 80,
       classPages: {},
       appreciationClasses: [],
       appreciations: {},
