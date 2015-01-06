@@ -26,6 +26,21 @@ angular.module('bsigala', [
       testEnv: $scope.testEnv,
       merchant: $scope.merchant,
       family: null,
+      classroom: null,
+      tickets: 0,
+      ticketPrice: function ticketPrice() {
+        var price = 0;
+        if ($scope.order.tickets >= 1) {
+          price = 20;
+        }
+        if ($scope.order.tickets >= 2) {
+          price += 12;
+        }
+        if ($scope.order.tickets > 2) {
+          price += ($scope.order.tickets - 2) * 8;
+        }
+        return price;
+      },
     };
   }
   $scope.resetOrder();
@@ -76,6 +91,7 @@ angular.module('bsigala', [
     var familyClasses = $scope.familyClassrooms(family);
     $scope.resetOrder();
     $scope.order.family = family;
+    $scope.order.classroom = $scope.selected.classroom;
   };
   
   $scope.familyClassrooms = function familyClassrooms(family) {
@@ -89,8 +105,10 @@ angular.module('bsigala', [
   };
   
   $scope.totalPrices = function totalPrices() {
+    var ticketPrice = $scope.order.ticketPrice();
     return {
-      total: 0,
+      tickets: ticketPrice,
+      total: ticketPrice,
     };
   }
 }])
@@ -115,6 +133,15 @@ angular.module('bsigala', [
           if (item.quantity) paypalCart['quantity_'+itemNumber] = { value: item.quantity };
           if (item.detailName) paypalCart['on0_'+itemNumber] = { value: item.detailName };
           if (item.detailInfo) paypalCart['os0_'+itemNumber] = { value: item.detailInfo };
+        }
+
+        if (order.tickets > 0) {
+          addItem({
+            name: "Ice Skating for " + order.tickets + " skaters",
+            amount: order.ticketPrice(),
+            detailName: "For",
+            detailInfo: order.family + ", class " + order.classroom.room,
+          });
         }
 
         while (element[0].firstChild) {

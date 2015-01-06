@@ -1,6 +1,6 @@
 <html lang="en" ng-app="bsigala" id="ng-app">
 <head>
-<title>BSI Gala Tickets</title>
+<title>BSI Tickets</title>
 <link href="/style.css" rel="stylesheet">
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
 <script src="/paypal-button.js"></script>
@@ -32,6 +32,14 @@
 </div>
 <div class="section" ng-show="order.family">
   <h2>Third, your order:</h2>
+  <div>Everyone who skates must order a ticket. Non-skaters are welcome, and do not require tickets.
+  Every order includes bag check, and every ticket includes ice skating, skate rental, a hot chocolate,
+  and a snack.
+  </div>
+  <div>
+  <select ng-model="order.tickets" ng-options="n for n in [0, 1, 2, 3, 4, 5, 6, 7, 8]"></select>
+    skaters
+  </div>
 </div>
 <div class="section">
   <h2>Your order</h2>
