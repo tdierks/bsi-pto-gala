@@ -76,10 +76,6 @@ angular.module('bsigala', [
     var familyClasses = $scope.familyClassrooms(family);
     $scope.resetOrder();
     $scope.order.family = family;
-    $scope.order.appreciationClasses = familyClasses;
-    angular.forEach(familyClasses, function(c) {
-      $scope.order.classPages[c] = 0;
-    });
   };
   
   $scope.familyClassrooms = function familyClassrooms(family) {
