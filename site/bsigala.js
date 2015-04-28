@@ -3,7 +3,7 @@
 angular.module('bsigala', [
 ])
 .controller('BsiGalaCtrl', ['$scope', '$http', function BsiGalaCtrl($scope, $http) {
-  $scope.testEnv = true;
+  $scope.testEnv = false;
   $scope.merchant = "L7AX8DDDDXCWC";
   
   if ($scope.testEnv) {
@@ -16,10 +16,7 @@ angular.module('bsigala', [
   $scope.selected = {
     "classroom": null,
     "family": null,
-    "appreciationRoomToAdd": null,
   };
-  
-  $scope.NONE = "NONE";
   
   $scope.resetOrder = function resetOrder() {
     $scope.order = {
@@ -28,6 +25,7 @@ angular.module('bsigala', [
       family: null,
       classroom: null,
       tickets: 0,
+      staff: 0,
       ticketPrice: function ticketPrice() {
         var price = 0;
         if ($scope.order.tickets >= 1) {
@@ -38,6 +36,13 @@ angular.module('bsigala', [
         }
         if ($scope.order.tickets > 2) {
           price += ($scope.order.tickets - 2) * 8;
+        }
+        return price;
+      },
+      staffPrice: function staffPrice() {
+        var price = 0;
+        if ($scope.order.staff) {
+          price += ($scope.order.staff) * 8;
         }
         return price;
       },
@@ -82,8 +87,8 @@ angular.module('bsigala', [
     $scope.resetOrder();
   };
   
-  $scope.noClassroom = function noClassroom() {
-    $scope.selected.classroom = $scope.NONE;
+  $scope.noClassroom = function noClassroom(group) {
+    $scope.selected.classroom = group;
     $scope.resetOrder();
   };
   
@@ -106,9 +111,11 @@ angular.module('bsigala', [
   
   $scope.totalPrices = function totalPrices() {
     var ticketPrice = $scope.order.ticketPrice();
+    var staffPrice = $scope.order.staffPrice();
     return {
       tickets: ticketPrice,
-      total: ticketPrice,
+      staff: staffPrice,
+      total: ticketPrice + staffPrice,
     };
   }
 }])
@@ -145,6 +152,15 @@ angular.module('bsigala', [
             amount: order.ticketPrice(),
             detailName: "For",
             detailInfo: order.family + classText,
+          });
+        }
+        if (order.staff > 0) {
+          addItem({
+            name: "Ice Skating for staff",
+            amount: 8,
+            quantity: order.staff,
+            detailName: "For",
+            detailInfo: order.family,
           });
         }
 

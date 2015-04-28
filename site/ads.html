@@ -1,0 +1,125 @@
+<html lang="en" ng-app="bsiads" id="ng-app">
+<head>
+<title>BSI Ads</title>
+<link href="/style.css" rel="stylesheet">
+    <script src="c/angular/angular.js"></script>
+    <script src="c/ng-file-upload/angular-file-upload.min.js"></script>
+<script src="/paypal-button.js"></script>
+<script src="bsiads.js"></script>
+</head>
+<body ng-controller="BsiAds">
+<form name="orderForm" novalidate>
+<h1>BSI Gala Program Ad Sales</h1>
+<h2 ng-show="testEnv" style="color:red">TEST ENVIRONMENT</h2>
+<div class="topinfo">
+<div>
+BSI Gala program will be distributed at our Gala Auction on June 6th, 2015 and a copy will be provided to each advertiser as well.
+</div>
+<div>
+<!-- You can view a sample program from the last year's Gala here. -->
+Submit your ads by May 15. Any questions should be addressed to <a href="mailto:bsiprogram2015@gmail.com">bsiprogram2015@gmail.com</a>.
+</div>
+<div>
+Ad prices (image sizes and message lengths apply to relevant layout options):
+<table>
+<tr><th>Size</th><th>Price</th><th>Image Size (pixels)</th><th>Message Length</th></tr>
+<tr><td>Full Page Inside Back Cover (4.875" x 7.875")</td><td>$750</td><td>1463 x 2363</td><td>800 chars</td></tr>
+<tr><td>Full Page Inside Front Cover (4.875" x 7.875")</td><td>$650</td><td>1463 x 2363</td><td>800 chars</td></tr>
+<tr><td>Full Page (4.875" x 7.875")</td><td>$450</td><td>1463 x 2363</td><td>800 chars</td></tr>
+<tr><td>Half Page (4.875" x 3.875")</td><td>$300</td><td>1463 x 1163</td><td>400 chars</td></tr>
+<tr><td>Quarter Page (2.375" x 3.875")</td><td>$200</td><td>713 x 1163</td><td>200 chars</td></tr>
+<tr><td>Eighth Page (2.375" x 1.875")</td><td>$100</td><td>713 x 563</td><td>100 chars</td></tr>
+</table>
+</div>
+<div>
+Submit your ad here (all fields are mandatory).
+Payments will be processed via PayPal on the next page.
+</div>
+</div>
+<div class="section">
+  <h2>Contact info for purchaser</h2>
+  <div>
+    <b>Name:</b>
+    <input type="text" ng-model="order.name" name="name" size=50 required>
+  </div>
+  <div>
+    <b>Email:</b>
+    <input type="text" ng-model="order.email" name="email" size=50 required>
+  </div>
+  <div>
+    <b>Phone:</b>
+    <input type="text" ng-model="order.phone" name="phone" size=50 required>
+  </div>
+  <h2>Your ad</h2>
+  <div>
+    <b>Ad Type:</b>
+    <select ng-model="order.ad_type" ng-options="type as type.text for type in TYPES" required>
+    </select>
+  </div>
+  <div>
+    <b>Ad Size:</b>
+    <select ng-model="order.ad_size" ng-options="size as size.text for size in SIZES" required>
+    </select>
+  </div>
+  <div>
+    <b>Ad Layout:</b>
+    <select ng-model="order.ad_layout" ng-options="layout as layout.text for layout in LAYOUTS" required>
+    </select>
+  </div>
+  <div ng-if="order.ad_layout.has_image">
+    <b>Your image: please provide an image {{order.ad_size.size.w}} pixels wide &times; {{order.ad_size.size.h}} pixels high</b>
+    <div ng-file-drop ng-model="order.image" ng-multiple="false" allow-dir="false" accept="image/*" class="drop-box" ngf-drag-over-class="dragover">
+      Drop Image Here
+    </div>
+    <div ng-if="order.image">
+      Image to upload: {{order.image[0].name}}
+    </div>
+  </div>
+  <div ng-if="order.ad_layout.has_text">
+    <b>Font:</b>
+    <div>
+      <input type="radio" ng-model="order.ad_font" value="Gill Sans" name="gillsans" ng-required="order.ad_layout.has_text">
+      <img src="img/gillsans.png" style="vertical-align: middle">
+    </div>
+    <div>
+      <input type="radio" ng-model="order.ad_font" value="Noteworthy" name="noteworthy" ng-required="order.ad_layout.has_text">
+      <img src="img/noteworthy.png" style="vertical-align: middle">
+    </div>
+    <div>
+      <input type="radio" ng-model="order.ad_font" value="Baskerville" name="baskerville" ng-required="order.ad_layout.has_text">
+      <img src="img/baskerville.png" style="vertical-align: middle">
+    </div>
+    <b>Text:</b>
+    <div>
+      <textarea ng-model="order.ad_text" ng-required="order.ad_layout.has_text"
+        ng-maxlength="order.ad_size.text_size" rows="10" cols="100" ng-required="order.ad_layout.has_text">
+      </textarea><br>
+      {{order.ad_size.text_size - order.ad_text.length}} characters remaining
+    </div>
+  </div>
+  <div ng-if="order.ad_layout.has_colors">
+    <b>Design Scheme:</b>
+    <div>
+      <input type="radio" ng-model="order.ad_design" value="white/blue/blue" name="design_wbb" ng-required="order.ad_layout.has_colors">
+      White background, blue text and border
+    </div>
+    <div>
+      <input type="radio" ng-model="order.ad_design" value="green/white/yellow" name="design_gwy" ng-required="order.ad_layout.has_colors">
+      Green background, white text, and yellow border
+    </div>
+    <div>
+      <input type="radio" ng-model="order.ad_design" value="blue/white/yellow" name="design_bwy" ng-required="order.ad_layout.has_colors">
+      Blue background, white text, and yellow border
+    </div>
+  </div>
+</div>
+<div ng-show="!processing && !submitted">
+<button ng-click="upload()" ng-disabled="!valid()">Upload Ad</button>
+</div>
+<div ng-show="processing">Uploading...</div>
+<div ng-show="submitted">
+Now, please pay for your ad: <buy-button order="order">
+</div>
+</form>
+</body>
+</html>

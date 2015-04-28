@@ -1,0 +1,20 @@
+{
+  "name": "bsigala",
+  "version": "0.0.0",
+  "homepage": "https://github.com/tdierks/bsi-pto-gala",
+  "authors": [
+    "Tim Dierks <tim@dierks.org>"
+  ],
+  "license": "none",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "ng-file-upload": "~3.3.2",
+    "angular": "~1.3.15"
+  }
+}

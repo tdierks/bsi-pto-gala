@@ -9,6 +9,18 @@ handlers:
   script: bsigala.app
   secure: always
 
+- url: /sheet-test
+  script: bsigala.app
+  secure: always
+
+- url: /submit-ad
+  script: bsigala.app
+  secure: always
+
+- url: /c/
+  static_dir: bower_components
+  secure: always
+
 - url: /$
   static_files: site/index.html
   upload: site/index.html
@@ -26,3 +38,5 @@ handlers:
 libraries:
 - name: webapp2
   version: "2.5.1"
+- name: pycrypto
+  version: "2.6"
